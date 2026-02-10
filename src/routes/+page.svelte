@@ -3,7 +3,10 @@
   import { onMount } from 'svelte';
   import { ThreeScene } from '$lib/components/threejs/threeScene';
   import { Body } from '$lib/components/threejs/body';
-    import { threeScene } from '$lib/components/stores.svelte';
+  import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
+  import { Button } from "$lib/components/ui/button/index.js";
+  import { threeScene } from '$lib/components/stores.svelte';
+    import { Earth, Orbit } from '@lucide/svelte';
 
   onMount(() => {
     
@@ -36,4 +39,18 @@
 
 </script>
 
-<canvas id="scene" class="h-[calc(100%-3rem)] w-full"></canvas>
+<!-- The three canvas -->
+<canvas id="scene" class="h-[calc(100%-3rem)] w-full absolute"></canvas>
+<!-- The other menu -->
+<div class="z-10 absolute right-0">
+  <div class="m-10">
+    <ButtonGroup.Root>
+      <Button size="icon" variant="secondary">
+        <Earth />
+      </Button>
+      <Button size="icon" variant="secondary">
+        <Orbit />
+      </Button>
+    </ButtonGroup.Root>
+  </div>
+</div>
