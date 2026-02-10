@@ -22,7 +22,7 @@ export class ThreeScene {
 
         this.canvas = canvas;
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
         this.camera.position.set(0, 5, 0);
         this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
