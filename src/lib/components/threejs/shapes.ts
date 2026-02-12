@@ -29,3 +29,42 @@ export function createCircle(radius: number, center: THREE.Vector3 = new THREE.V
     circle.rotation.copy(rotation);
     return circle;
 }
+
+export function createSphere(radius: number, center: THREE.Vector3, color: THREE.Color = cssColor('--foreground')): THREE.Mesh {
+    const material = new THREE.MeshBasicMaterial({ color: color });
+    const sphereGeometry = new THREE.SphereGeometry(radius, 64, 64);
+    const sphere = new THREE.Mesh(sphereGeometry, material);
+    sphere.position.copy(center);
+
+    return sphere;
+}
+
+export function createAxes(scale: number, center = new THREE.Vector3(0, 0, 0)): THREE.Object3D {
+    const axes = new THREE.Object3D();
+
+    const xAxis = new THREE.ArrowHelper(
+        new THREE.Vector3(1, 0, 0),
+        center,
+        scale,
+        0xff0000 // red
+    );
+    axes.add(xAxis);
+
+    const yAxis = new THREE.ArrowHelper(
+        new THREE.Vector3(0, 1, 0),
+        center,
+        scale,
+        0x00ff00 // green
+    );
+    axes.add(yAxis);
+
+    const zAxis = new THREE.ArrowHelper(
+        new THREE.Vector3(0, 0, 1),
+        center,
+        scale,
+        0x0000ff // blue
+    );
+    axes.add(zAxis);
+
+    return axes;
+}

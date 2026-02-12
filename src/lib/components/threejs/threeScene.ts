@@ -24,7 +24,7 @@ export class ThreeScene {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
         this.camera.position.set(0, 5, 0);
-        this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true });
+        this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true, antialias: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -61,7 +61,7 @@ export class ThreeScene {
         this.camera.position.copy(center);
         this.camera.position.y += distance * padding;
 
-        this.camera.near = distance / 100;
+        this.camera.near = 0.1;
         this.camera.far  = distance * 100;
         this.camera.updateProjectionMatrix();
 
@@ -70,10 +70,16 @@ export class ThreeScene {
     }
 
     animate() {
-      this.controls.update();
-      this.updatables.forEach(obj => obj.update(this.camera));
-      
-      this.composer.render();
+        this.controls.update();
+        this.updatables.forEach(obj => obj.update(this.camera));
+        
+        this.composer.render();       
+
+        if (this.resizeRendererToDisplaySize()) {
+            const canvas = this.renderer.domElement;
+            this.camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            this.camera.updateProjectionMatrix();
+        }
     }
 
     registerBody(body: Body) {
@@ -81,6 +87,29 @@ export class ThreeScene {
             this.outlinePass.selectedObjects.push(body.body);
         }
     }
+
+    // inside ThreeScene class
+    resizeRendererToDisplaySize() {
+        const canvas = this.renderer.domElement;
+        const pixelRatio = window.devicePixelRatio;
+        const width  = Math.floor(canvas.clientWidth * pixelRatio);
+        const height = Math.floor(canvas.clientHeight * pixelRatio);
+        
+        const needResize = canvas.width !== width || canvas.height !== height;
+        
+        if (needResize) {
+            // 1. Resize the renderer (keep third param 'false' so CSS handles display size)
+            this.renderer.setSize(width, height, false);
+            
+            // 2. Resize the composer and its passes
+            this.composer.setSize(width, height);
+            
+            // 3. Specifically update the resolution of the OutlinePass
+            this.outlinePass.resolution.set(width, height);
+        }
+        return needResize;
+    }
+
     refreshColors() {
 
         // Outline color
@@ -106,6 +135,16 @@ export class ThreeScene {
         }
     }
 
+    centerCameraOnBody(body: Body) {
+        if (!body.body) return;
+        const bounds = new THREE.Box3().setFromObject(body.body);
+        const center = bounds.getCenter(new THREE.Vector3());
+        this.camera.lookAt(center);
+
+        // todo: lerp to the new position instead of snapping
+        this.controls.target.copy(center);
+        this.controls.cursor = center;
+    }
 }
 
 

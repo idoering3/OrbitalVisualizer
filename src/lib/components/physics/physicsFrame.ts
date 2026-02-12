@@ -1,13 +1,22 @@
+export interface PoseSnapshot {
+    position: [number, number, number];
+    rotation: [number, number, number, number]; // [x, y, z, w]
+}
 
-export class PhysicsFrame {
-    xVector: number;
-    yVector: number;
-    zVector: number;
-    children?: PhysicsFrame[] = [];
+export interface FrameInfo {
+    id: string;
+    name: string;
+    parent_id: string | null;
+    pose: PoseSnapshot;
+}
 
-    constructor(xVector: number, yVector: number, zVector: number) {
-        this.xVector = xVector;
-        this.yVector = yVector;
-        this.zVector = zVector;
-    }
+export function scaleFrameInfo(info: FrameInfo): FrameInfo {
+    const [x, y, z] = info.pose.position;
+    return {
+        ...info,
+        pose: {
+            ...info.pose,
+            position: [x / 1000, y / 1000, z / 1000],
+        }
+    };
 }

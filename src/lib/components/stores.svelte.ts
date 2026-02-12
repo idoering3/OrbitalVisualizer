@@ -8,3 +8,7 @@ export let threeScene = $state({
 export let bodies = $state({
     bodies: [] as Body[],
 });
+
+export let simTime = $state({
+    t: 0
+});

@@ -26,7 +26,7 @@
     <Button class="h-12 w-12 rounded-none m-0" variant="ghost" onclick={toggleFullscreenApplication}>
         <Square size={12} />
     </Button>
-    <Button class="h-12 w-12 rounded-none m-0 hover:bg-red-600" variant="ghost" onclick={closeApplication}>
+    <Button class="h-12 w-12 rounded-none m-0 hover:bg-destructive hover:dark:bg-destructive" variant="ghost" onclick={closeApplication}>
         <X />
     </Button>
 </header>
