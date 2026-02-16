@@ -77,6 +77,41 @@ pub fn get_frame(store: State<FrameStore>, id: String, t: f64) -> Result<FrameIn
 }
 
 #[tauri::command]
+pub fn get_frame_range(
+    store: State<'_, FrameStore>, 
+    id: String, 
+    t_start: f64, 
+    t_end: f64, 
+    steps: usize
+) -> Result<Vec<FrameInfo>, String> {
+    if steps == 0 {
+        return Ok(Vec::new());
+    }
+
+    // Pre-allocate the vector to avoid reallocation overhead during the loop
+    let mut results = Vec::with_capacity(steps);
+    
+    // Calculate the time step (dt)
+    let dt = if steps > 1 {
+        (t_end - t_start) / (steps as f64 - 1.0)
+    } else {
+        0.0
+    };
+
+    for i in 0..steps {
+        let t = t_start + dt * (i as f64);
+        
+        // Use your existing helper to build the info for this specific time
+        match build_frame_info(&store, id.clone(), t) {
+            Ok(info) => results.push(info),
+            Err(e) => return Err(e),
+        }
+    }
+
+    Ok(results)
+}
+
+#[tauri::command]
 pub fn list_frames(store: State<FrameStore>, t: f64) -> Vec<FrameInfo> {
     store.all_ids()
         .into_iter()

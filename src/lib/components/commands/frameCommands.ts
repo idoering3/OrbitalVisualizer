@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import type { FrameInfo } from '../physics/physicsFrame';
+import type { FrameInfo } from '../physics/physicsFrame.svelte';
 
 export async function createECI() {
     // Create the frame hierarchy

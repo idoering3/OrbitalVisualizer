@@ -3,18 +3,19 @@
   import { onMount } from 'svelte';
   import { ThreeScene } from '$lib/components/threejs/threeScene';
   import { Body } from '$lib/components/threejs/body';
-  import { bodies, simTime, threeScene } from '$lib/components/stores.svelte';
+  import { bodies, frames, simTime, threeScene } from '$lib/components/stores.svelte';
   import { PhysicsBody } from '$lib/components/physics/physicsBody';
   import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
   import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import Timeline from '$lib/components/timeline/Timeline.svelte';
   import { invoke } from '@tauri-apps/api/core';
-  import { Frame } from '$lib/components/threejs/frame';
+  import { Frame } from '$lib/components/threejs/frame.svelte';
   import TimelineSettings from '$lib/components/timeline/TimelineSettings.svelte';
 
   let ecef: Frame | undefined = $state();
   let baseStation: Frame | undefined = $state();
+  let baseStation1: Frame | undefined = $state();
 
   onMount(() => { // Removed 'async' here
     const canvas = document.getElementById("scene") as HTMLCanvasElement;
@@ -48,9 +49,12 @@
         bodies.bodies = [earth, satellite];
 
         const eci = await Frame.createECI('eci', threeScene.threeScene);
-        eci.toggleAxes();
+        eci.toggleAxes();  
         ecef = await Frame.createECEF('ecef', eci.id, 0, threeScene.threeScene);
-        baseStation = await Frame.createSEZ('baseStation', ecef.id, 0.873, 0.0, 0.0008, threeScene.threeScene);
+        // ecef.toggleAxes();
+        baseStation = await Frame.createSEZ('basestation', ecef.id, 0.873, 0.0, 0.0008, threeScene.threeScene);
+        // baseStation.toggleAxes();
+        frames.frames.push(eci, ecef, baseStation, baseStation1);
 
         threeScene.threeScene.fitCameraToBounds();
       }
@@ -74,7 +78,7 @@
 </script>
 
 <!-- The three canvas -->
-<canvas id="scene" class="h-full w-full absolute block"></canvas>
+<canvas id="scene" class="h-[calc(100%-3rem)] w-full absolute block"></canvas>
 <!-- The other menu -->
 <div class="z-10 absolute right-0 m-10 w-1xl">
     <Sidebar />
