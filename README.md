@@ -1,6 +1,7 @@
-# Tauri + SvelteKit + TypeScript
+# Introduction
 
-This template should help get you started developing with Tauri, SvelteKit and TypeScript in Vite.
+This is a tool mainly made to visualize orbits and problems in orbital mechanics.
+
 
 ## Recommended IDE Setup
 
